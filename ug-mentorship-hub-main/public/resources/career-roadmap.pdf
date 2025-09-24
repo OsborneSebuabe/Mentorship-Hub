@@ -1,0 +1,28 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 182 >>
+stream
+BT
+/F1 20 Tf 72 740 Td (UG Mentorship Career Roadmap) Tj
+12 TL
+0 -24 Td (1. Foundations: Data Structures, Algorithms, OOP) Tj
+0 -24 Td (2. Projects: 3-5 portfolio projects in chosen track) Tj
+0 -24 Td (3. Internships: Apply, network, get references) Tj
+0 -24 Td (4. Interviews: DSA practice, system design basics) Tj
+0 -24 Td (5. Growth: Contribute to OSS, mentorship, leadership) Tj
+ET
+endstream
+endobj
+trailer
+<< /Root 1 0 R >>
+%%EOF
+

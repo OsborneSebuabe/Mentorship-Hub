@@ -1,0 +1,27 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 140 >>
+stream
+BT
+/F1 20 Tf 72 740 Td (Interview Preparation Checklist) Tj
+12 TL
+0 -24 Td (Algorithms: Arrays, Trees, Graphs) Tj
+0 -24 Td (Systems: OS, Networks, Databases) Tj
+0 -24 Td (Behavioral: STAR stories) Tj
+0 -24 Td (Practice: Mock interviews weekly) Tj
+ET
+endstream
+endobj
+trailer
+<< /Root 1 0 R >>
+%%EOF
+
