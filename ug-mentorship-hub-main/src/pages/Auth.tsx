@@ -381,21 +381,35 @@ const Auth = () => {
                     </button>
                   </div>
 
-                  {/* Look Around buttons */}
-                  <div className="flex items-center justify-center gap-3 pt-2">
+                  {/* Look Around buttons to dashboards */}
+                  <div className="flex items-center justify-center gap-3 pt-2 flex-wrap">
                     <Button
                       type="button"
                       className="bg-black text-white hover:bg-black/90"
-                      onClick={() => navigate('/student/overview')}
+                      onClick={() => navigate('/dashboard')}
                     >
                       Look Around (Student)
                     </Button>
                     <Button
                       type="button"
                       className="bg-black text-white hover:bg-black/90"
-                      onClick={() => navigate('/lecturer/overview')}
+                      onClick={() => navigate('/lecturer')}
                     >
                       Look Around (Lecturer)
+                    </Button>
+                    <Button
+                      type="button"
+                      className="bg-black text-white hover:bg-black/90"
+                      onClick={() => navigate('/admin')}
+                    >
+                      Look Around (Admin)
+                    </Button>
+                    <Button
+                      type="button"
+                      className="bg-black text-white hover:bg-black/90"
+                      onClick={() => navigate('/alumni')}
+                    >
+                      Look Around (Alumni)
                     </Button>
                   </div>
                 </form>
