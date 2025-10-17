@@ -51,32 +51,28 @@ const Dashboard = () => {
     const checkAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        
         if (!session) {
-          navigate('/auth');
+          // Guest look-around: render a minimal student dashboard
+          setProfile({ id: 'guest', full_name: 'Guest', role: 'student' });
           return;
         }
 
-        // Fetch user profile
         const { data: profileData, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('user_id', session.user.id)
-          .single();
+          .maybeSingle();
 
         if (error) {
           console.error('Error fetching profile:', error);
-          toast({
-            title: 'Error',
-            description: 'Failed to load profile data',
-            variant: 'destructive',
-          });
+          // Fallback to guest if profile missing
+          setProfile({ id: session.user.id, full_name: session.user.email ?? 'User', role: 'student' });
         } else {
-          setProfile(profileData);
+          setProfile(profileData ?? { id: session.user.id, full_name: session.user.email ?? 'User', role: 'student' });
         }
       } catch (error) {
         console.error('Auth check failed:', error);
-        navigate('/auth');
+        setProfile({ id: 'guest', full_name: 'Guest', role: 'student' });
       } finally {
         setIsLoading(false);
       }
@@ -88,17 +84,10 @@ const Dashboard = () => {
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
-      toast({
-        title: 'Signed out',
-        description: 'You have been successfully signed out.',
-      });
+      toast({ title: 'Signed out', description: 'You have been successfully signed out.' });
       navigate('/');
     } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to sign out',
-        variant: 'destructive',
-      });
+      toast({ title: 'Error', description: 'Failed to sign out', variant: 'destructive' });
     }
   };
 
@@ -117,8 +106,8 @@ const Dashboard = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Profile not found</h2>
-          <Button onClick={() => navigate('/auth')}>Return to Login</Button>
+          <h2 className="text-xl font-semibold text-foreground mb-4">Welcome</h2>
+          <Button onClick={() => navigate('/auth')}>Sign In</Button>
         </div>
       </div>
     );
@@ -160,26 +149,28 @@ const Dashboard = () => {
               <Button variant="ghost" size="icon">
                 <MessageCircle className="h-5 w-5" />
               </Button>
-              
-              <div className="flex items-center space-x-3">
-                <Avatar className="cursor-pointer" onClick={() => navigate('/profile')}>
-                  <AvatarImage src={profile.avatar_url} />
-                  <AvatarFallback className="bg-primary text-primary-foreground">
-                    {profile.full_name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="hidden md:block">
-                  <p className="text-sm font-medium">{profile.full_name}</p>
-                  <p className="text-xs text-muted-foreground capitalize">{profile.role}</p>
-                </div>
-              </div>
-
-              <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
-                <Settings className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" onClick={handleLogout}>
-                <LogOut className="h-5 w-5" />
-              </Button>
+              {profile.id !== 'guest' && (
+                <>
+                  <div className="flex items-center space-x-3">
+                    <Avatar className="cursor-pointer" onClick={() => navigate('/profile')}>
+                      <AvatarImage src={profile.avatar_url} />
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {profile.full_name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="hidden md:block">
+                      <p className="text-sm font-medium">{profile.full_name}</p>
+                      <p className="text-xs text-muted-foreground capitalize">{profile.role}</p>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
+                    <Settings className="h-5 w-5" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={handleLogout}>
+                    <LogOut className="h-5 w-5" />
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -200,10 +191,10 @@ const StudentDashboard: React.FC<{ profile: Profile }> = ({ profile }) => (
     {/* Welcome Section */}
     <div className="text-center">
       <h1 className="text-3xl font-bold text-gradient mb-2">
-        Welcome back, {profile.full_name.split(' ')[0]}!
+        Welcome {profile.id === 'guest' ? '— browsing as Guest' : `back, ${profile.full_name.split(' ')[0]}!`}
       </h1>
       <p className="text-muted-foreground">
-        Ready to continue your mentorship journey?
+        {profile.id === 'guest' ? 'Sign in to save progress and unlock all features.' : 'Ready to continue your mentorship journey?'}
       </p>
     </div>
 
