@@ -2,13 +2,11 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-// Defaults to your new Supabase project URL; anon key must come from env
+// Defaults to your new Supabase project URL and anon key if env vars are missing
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://iqmeqfhtmfosfzlpuukl.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-if (!SUPABASE_PUBLISHABLE_KEY) {
-  throw new Error('Missing VITE_SUPABASE_ANON_KEY. Set it in .env.local (local) and in Vercel project envs (production).');
-}
+const SUPABASE_PUBLISHABLE_KEY =
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlxbWVxZmh0bWZvc2Z6bHB1dWtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2NDUyNzMsImV4cCI6MjA3NjIyMTI3M30.qQspRKBH9NmpORQuYzmIz8b72rPnnBPYUsw-hbB98lE';
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
