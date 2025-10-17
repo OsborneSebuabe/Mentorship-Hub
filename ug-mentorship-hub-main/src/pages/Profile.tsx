@@ -57,9 +57,8 @@ const Profile = () => {
   const fetchProfile = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      
       if (!session) {
-        navigate('/auth');
+        setProfile(null);
         return;
       }
 
@@ -67,21 +66,15 @@ const Profile = () => {
         .from('profiles')
         .select('*')
         .eq('user_id', session.user.id)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching profile:', error);
-        toast({
-          title: 'Error',
-          description: 'Failed to load profile data',
-          variant: 'destructive',
-        });
-      } else {
-        setProfile(profileData);
       }
+      setProfile(profileData ?? null);
     } catch (error) {
       console.error('Profile fetch failed:', error);
-      navigate('/auth');
+      setProfile(null);
     } finally {
       setLoading(false);
     }
@@ -93,41 +86,34 @@ const Profile = () => {
     setSaving(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      
       if (!session) {
-        navigate('/auth');
+        toast({ title: 'Not signed in', description: 'Please sign in to save your profile.', variant: 'destructive' });
         return;
       }
 
       const { error } = await supabase
         .from('profiles')
-        .update({
+        .upsert({
+          user_id: session.user.id,
+          email: session.user.email ?? null,
           full_name: profile.full_name,
           bio: profile.bio,
           interests: profile.interests,
           linkedin_url: profile.linkedin_url,
-        })
-        .eq('user_id', session.user.id);
+          department: profile.department,
+          year_of_study: profile.year_of_study,
+          role: (profile.role ?? 'student') as 'student' | 'lecturer' | 'alumni' | 'admin'
+        }, { onConflict: 'user_id' });
 
       if (error) {
-        toast({
-          title: 'Error',
-          description: 'Failed to update profile',
-          variant: 'destructive',
-        });
+        toast({ title: 'Error', description: 'Failed to update profile', variant: 'destructive' });
       } else {
-        toast({
-          title: 'Success',
-          description: 'Profile updated successfully',
-        });
+        toast({ title: 'Success', description: 'Profile saved successfully' });
         setIsEditing(false);
+        await fetchProfile();
       }
     } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'An unexpected error occurred',
-        variant: 'destructive',
-      });
+      toast({ title: 'Error', description: 'An unexpected error occurred', variant: 'destructive' });
     } finally {
       setSaving(false);
     }
@@ -159,9 +145,13 @@ const Profile = () => {
   if (!profile) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Profile not found</h2>
-          <Button onClick={() => navigate('/dashboard')}>Return to Dashboard</Button>
+        <div className="text-center space-y-4">
+          <h2 className="text-xl font-semibold text-foreground">No profile yet</h2>
+          <p className="text-sm text-muted-foreground">Create your profile to unlock mentorship features.</p>
+          <Button onClick={() => setIsEditing(true)}>Create Profile</Button>
+          <div>
+            <Button variant="outline" onClick={() => navigate('/dashboard')} className="mt-2">Return to Dashboard</Button>
+          </div>
         </div>
       </div>
     );
@@ -209,7 +199,7 @@ const Profile = () => {
                     <Avatar className="h-32 w-32">
                       <AvatarImage src={profile.avatar_url} />
                       <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
-                        {profile.full_name.split(' ').map(n => n[0]).join('')}
+                        {profile.full_name?.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
                     {isEditing && (
