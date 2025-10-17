@@ -377,9 +377,26 @@ const Auth = () => {
                     >
                       {mode === 'signup' 
                         ? 'Already have an account? Sign in' 
-                        : "Don't have an account? Sign up"
-                      }
+                        : "Don't have an account? Sign up"}
                     </button>
+                  </div>
+
+                  {/* Look Around buttons */}
+                  <div className="flex items-center justify-center gap-3 pt-2">
+                    <Button
+                      type="button"
+                      className="bg-black text-white hover:bg-black/90"
+                      onClick={() => navigate('/student/overview')}
+                    >
+                      Look Around (Student)
+                    </Button>
+                    <Button
+                      type="button"
+                      className="bg-black text-white hover:bg-black/90"
+                      onClick={() => navigate('/lecturer/overview')}
+                    >
+                      Look Around (Lecturer)
+                    </Button>
                   </div>
                 </form>
               </CardContent>
